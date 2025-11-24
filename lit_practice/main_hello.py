@@ -40,7 +40,7 @@ st.code('print("Hello, World!")', language='python', line_numbers=True)
 
 '### 코드+결과: st.echo()'
 with st.echo():
-# 이 블록의 코드와 결과를 출력
+    # 이 블록의 코드와 결과를 출력
     name = 'sumin Kim'
     st.write("Hello, Streamlit!", name)
 
