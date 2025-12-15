@@ -1,10 +1,10 @@
 import streamlit as st
 
 st.set_page_config(
-    page_title='수민이의 streamlit',
-    page_icon='❤️',
+    page_title='K팝 데몬 헌터스 온라인 데이터 분석',
+    page_icon='✨',
     layout='wide',
-    initial_sidebar_state='expanded',
+    initial_sidebar_state='collapsed',
     menu_items={
         'Get help':'https://docs.streamlit.io',
         'Report a bug':'https://streamlit.io',
@@ -12,67 +12,85 @@ st.set_page_config(
     }
 )
 
-st.title("✨ 수민이의 첫 Streamlit 앱")
-st.write("여기에 텍스트, 그래프, 데이터프레임 등을 점점 추가해 나가면 돼요!")
+st.title("✨K팝 데몬 헌터스 온라인 데이터 분석 보고서")
+st.caption('C221011 김수민')
+'### 1. 뉴스 본문 키워드 빈도 시각화-Seaborn,Altair,Plotly 활용'
+st.caption('출처: 네이버 뉴스')
+tab1,tab2,tab3=st.tabs(['Seabron','Altair','Plotly'])
+with tab1:
+    st.caption('seaborn으로 그래프 그리기')
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    df=pd.read_csv(r'C:\Users\paint\OneDrive\Desktop\Githubproject\Dataviz\데이터 시각화\키워드카운트.csv')
+    plt.rcParams["font.family"] = "Malgun Gothic"
+    fig,ax= plt.subplots(figsize=(6,4))
+    sns.barplot(data=df,y='keyword',x='count')
+    ax.set_title('K팝 데몬 헌터스 뉴스 키워드 상위 20개')
+    ax.set_xlabel('Count')
+    ax.set_ylabel('Keyword')
+    plt.tight_layout()
+    st.pyplot(fig)
+with tab2:
+    st.caption('altair로 그래프 그리기, tooltip 적용')
+    import altair as alt
 
-'## : 일반 텍스트'
-st.title('제목 : st.title()')
+    c = (
+        alt.Chart(df)
+        .mark_bar()
+        .encode(
+            x=alt.X('count:Q', title='Count'),
+            y=alt.Y('keyword:N', title='Keyword',
+                    sort=alt.SortField(field='count', order='descending')),
+            tooltip=['keyword:N', 'count:Q']
+        ).properties(
+        title="K팝 데몬 헌터스 뉴스 키워드 상위 20개"
+    )
+    )
+    st.altair_chart(c, use_container_width=True)
 
-st.header('헤더 : st.header()')
-st.subheader('서브헤더 : st.subheader()')
-st.text('본문 텍스트 : st.text()')
-st.markdown('# 마크다운 : st.markdown()')
-st.caption('캡션(작고 흐린 글씨로 표현됨) : st.caption()')
+with tab3:
+    st.caption('plotly로 그래프 그리기, 인터랙티브 시각화')
+    import plotly.express as px
+    fig=px.bar(df.sort_values('count',ascending=True),
+            x='count',
+            y='keyword',
+            orientation='h',
+            hover_data={'keyword':True,"count":True},
+            title="K팝 데몬 헌터스 뉴스 키워드 상위 20개",
+            height=800
+    )
+    st.plotly_chart(fig,use_container_width=True)
 
-#st.write() : 텍스트, Markdown, 데이터, Matplotlib 수치, Altair 차트 등 거의 모든 것을 출력하는 함수
+'## 2. 뉴스 제목 키워드 워드 클라우드'
+st.caption('출처: 네이버 뉴스')
+st.image(r'C:\Users\paint\OneDrive\Desktop\Githubproject\Dataviz\데이터 시각화\워드클라우드.png',use_container_width=True)
+'글로벌, 3개 부분, 마마 어워즈 및 여러 걸그룹이 언급되는 걸 보아 최근에 글로벌 시상식인 마마 어워즈에 나가 수상을 한 것이 이슈가 되었다. 또한 강감독과 매기강 등의 언급을 보면 케데헌의 감독의 역할이 주목받고 있음을 알 수 있다.'
 
-'### st.write()'
-st.write('# 마크다운 H1 : st.write()')
-st.write('## 마크다운 H3 : st.write()')
-st.write('') # 빈 줄 추가
+'## 3. 뉴스 본문 키워드 네트워크 시각화'
+st.caption('출처: 네이버 뉴스')
+'### 네트워크 시각화'
+st.image(r'C:\Users\paint\OneDrive\Desktop\Githubproject\Dataviz\데이터 시각화\네트워크그래프.png',use_container_width=True)
+'### circular 네트워크 시각화'
+st.image(r'C:\Users\paint\OneDrive\Desktop\Githubproject\Dataviz\데이터 시각화\circulara_네트워크.png',use_container_width=True)
+'뉴스 내용에는 케이팝 데몬 헌터스의 설명인 넷플릭스 애니메이션 콘텐츠를 언급하고 있다. 골든, 차트, 트랙 사운드 등의 키워드를 보아 해당 영화의 ost가 많은 주목을 받고 있음을 알 수 있다.'
+st.divider()
+'## 추가 정보 및 게임'
+st.caption('확장 컨테이너 사용')
+with st.expander('K팝 데몬 헌터스의 대표 OST'):
+    st.caption('버튼 누를 시 뮤직비디오 링크로 이동')
+    st.link_button("Golden(K팝 데몬 헌터스) 뮤직비디오", "https://youtu.be/UkFLk0-xf58?si=tXNAsriFnI4r6ron")
+with st.expander('K팝 데몬 헌터스 퀴즈'):
+    st.caption('틀릴 시 fail 콜아웃, 정답 시 success, 풍선 애니매이션 효과')
+    st.write('다음 중 K팝 데몬 헌터스의 멤버가 아닌 것은?')
 
-'### 색상이 있는 텍스트'
-st.write('1. :red[빨간색 텍스트]')
-st.write('- :blue[파란색 텍스트!]')
+    choice = st.radio('정답을 선택하세요', ['루미','미라','애니','조이'], index=None)
 
-'### 코드 블록: st.code()'
-st.code('print("Hello, World!")', language='python', line_numbers=True)
+    if choice is not None:
+        if choice == '애니':
+            st.success('success')
+            st.balloons()
+        else:
+            st.error('fail')
 
-'### 코드+결과: st.echo()'
-with st.echo():
-    # 이 블록의 코드와 결과를 출력
-    name = 'sumin Kim'
-    st.write("Hello, Streamlit!", name)
 
-'### Latex 수식 작성: st.latex()' #레이텍스, 수학기호
-st.latex(r'\int_a^b f(x)dx')
-st.latex(r'\int_0^\infty \frac{1}{x^2}dx=[\frac{-1}{x}]_0^\infty')
-"### 구분선 st.divider()"
-with st.echo():
-    st.divider()
-'''
-### 마크다운 링크
-- [네이버](https://www.naver.com)
-
-### 마크다운 인용
-> 인용문: '스트림릿은 정말 재미있어요!'
-
-### 마크다운 표
-| 이름   | 나이 | 전공           |
-| ------ | ---- | -------------- |
-| 김수민 | 22   | 산업 데이터 공학과 |
-
-### 마크다운 코드 블록
-```python
-def hello_world():
-    print("Hello, World!")
-```
-'''
-
-'# : 미디어 삽입'
-
-st.audio(
-    r"C:\Users\paint\OneDrive\Desktop\Githubproject\Dataviz\데이터 시각화\data\FunkyGiraffe.mp3",
-    format="audio/mpeg",
-    loop=True
-)
