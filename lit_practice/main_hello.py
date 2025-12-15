@@ -22,7 +22,7 @@ with tab1:
     import seaborn as sns
     import matplotlib.pyplot as plt
     import pandas as pd
-    df=pd.read_csv('키워드카운트.csv')
+    df=pd.read_csv(r'lit_practice\키워드카운트.csv')
     plt.rcParams["font.family"] = "Malgun Gothic"
     fig,ax= plt.subplots(figsize=(6,4))
     sns.barplot(data=df,y='keyword',x='count')
