@@ -27,10 +27,25 @@ with tab1:
     st.caption('seaborn으로 그래프 그리기')
     import seaborn as sns
     import matplotlib.pyplot as plt
-    import pandas as pd
-    plt.rcParams["font.family"] = "Malgun Gothic"
-    fig,ax= plt.subplots(figsize=(6,4))
-    sns.barplot(data=df,y='keyword',x='count')
+    from matplotlib import font_manager
+    from pathlib import Path
+
+    # ✅ 배포용 폰트 등록 (프로젝트에 ttf 파일이 있어야 함)
+    BASE_DIR = Path(__file__).resolve().parent
+    FONT_PATH = BASE_DIR / "fonts" / "The Jamsil OTF 2 Light.otf"   # 폰트 파일명에 맞게 수정하세요
+
+    if FONT_PATH.exists():
+        font_manager.fontManager.addfont(str(FONT_PATH))
+        font_name = font_manager.FontProperties(fname=str(FONT_PATH)).get_name()
+        plt.rcParams["font.family"] = font_name
+    else:
+        # 폰트 파일이 없으면 기본 폰트로라도 실행되게
+        plt.rcParams["font.family"] = "sans-serif"
+
+    plt.rcParams["axes.unicode_minus"] = False  # 마이너스 깨짐 방지
+
+    fig, ax = plt.subplots(figsize=(6,4))
+    sns.barplot(data=df, y='keyword', x='count', ax=ax)
     ax.set_title('K팝 데몬 헌터스 뉴스 키워드 상위 20개')
     ax.set_xlabel('Count')
     ax.set_ylabel('Keyword')
